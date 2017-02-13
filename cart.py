@@ -35,67 +35,58 @@ class ShoppingCart:
         """
         Add item to cart
         """
-        try:
-            name = self.products[item][0]['name']
-            price = float('{:.2f}'.format(self.products[item][0]['price']))
+        name = self.products[item][0]['name']
+        price = float('{:.2f}'.format(self.products[item][0]['price']))
 
-            self.cart[item] = [{'price': price * qty, 'quantity': qty}]
+        self.cart[item] = [{'price': price * qty, 'quantity': qty}]
 
-            # Offers and promotions
-            if item == 'ult_small' and qty == 3:
-                new_price = '{:.2f}'.format(float(price) * 2)
-                self.cart[item][0]['price'] = float(new_price)
-            elif item == 'ult_large' and qty > 3:
-                new_price = '{:.2f}'.format(39.90 * qty)
-                self.cart[item][0]['price'] = float(new_price)
-            elif item == 'ult_medium':
-                self.cart[item][0]['freebie'] = '1 GB Data-pack'
-                self.cart[item][0]['frbqty'] = qty
-        except Exception:
-            raise
+        # Offers and promotions
+        if item == 'ult_small' and qty == 3:
+            new_price = '{:.2f}'.format(float(price) * 2)
+            self.cart[item][0]['price'] = float(new_price)
+        elif item == 'ult_large' and qty > 3:
+            new_price = '{:.2f}'.format(39.90 * qty)
+            self.cart[item][0]['price'] = float(new_price)
+        elif item == 'ult_medium':
+            self.cart[item][0]['freebie'] = '1 GB Data-pack'
+            self.cart[item][0]['frbqty'] = qty
 
     def total(self, promo_code=None):
         """
         Compute total and apply discount if there's a promo code
         """
-        try:
-            prices = [self.cart[key][0]['price'] for key in self.cart]
+        prices = [self.cart[key][0]['price'] for key in self.cart]
 
-            if promo_code:
-                total = sum(prices)
-                new_total = total - (total * 0.10)
+        if promo_code:
+            total = sum(prices)
+            new_total = total - (total * 0.10)
 
-                print('PromoCode: {}'.format(promo_code))
-                print('Discount: 10%')
-                print('Total: ${:.2f}'.format(new_total))
+            print('PromoCode: {}'.format(promo_code))
+            print('Discount: 10%')
+            print('Total: ${:.2f}'.format(new_total))
+        else:
+            total = sum(prices)
+            ult_medium = self.cart.get('ult_medium', None)
+
+            if ult_medium:
+                freebie = self.cart['ult_medium'][0]['freebie']
+                frbqty = self.cart['ult_medium'][0]['frbqty']
+
+                print('Total: ${:.2f}'.format(total))
+                print('Freebie(s): {0} x {1}'.format(freebie, frbqty))
             else:
-                total = sum(prices)
-                ult_medium = self.cart.get('ult_medium', None)
-
-                if ult_medium:
-                    freebie = self.cart['ult_medium'][0]['freebie']
-                    frbqty = self.cart['ult_medium'][0]['frbqty']
-
-                    print('Total: ${:.2f}'.format(total))
-                    print('Freebie(s): {0} x {1}'.format(freebie, frbqty))
-                else:
-                    print('Total: ${:.2f}'.format(total))
-        except Exception:
-            raise
+                print('Total: ${:.2f}'.format(total))
 
     def items(self):
         """
         Show cart
         """
-        try:
-            print('Cart:')
-            for key in self.cart:
-                name = self.products[key][0]['name']
-                qty = self.cart[key][0]['quantity']
+        print('Cart:')
+        for key in self.cart:
+            name = self.products[key][0]['name']
+            qty = self.cart[key][0]['quantity']
 
-                print('- {0} x {1}'.format(name, qty))
-        except Exception:
-            raise
+            print('- {0} x {1}'.format(name, qty))
 
 
 def main():
